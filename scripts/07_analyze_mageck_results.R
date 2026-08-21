@@ -35,7 +35,7 @@ results <- fread(gene_summary_path) %>%
       TRUE ~ "not_significant"
     ),
     label = case_when(
-      significant != "not_significant" & (`neg|rank` < 3 | `pos|rank` < 3) ~ id
+      significant != "not_significant" & (`neg|rank` <= 3 | `pos|rank` <= 3) ~ id
     )
   )
 
