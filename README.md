@@ -1,10 +1,10 @@
 # CRISPRi HCR-FlowFISH Screen Analysis
 
-Analysis pipeline for four CRISPRi HCR-FlowFISH screens, from demultiplexed FASTQs through MAGeCK RRA.
+Analysis pipeline for four CRISPRi HCR-FlowFISH screens, from demultiplexed FASTQs through regulatory element identification.
 
 ## Background
 
-Common noncoding variants identified by GWAS are thought to act primarily through gene regulatory mechanisms, but linking a putative regulatory element (pRE) to the gene(s) it controls requires direct functional testing. CRISPRi HCR-FlowFISH screening addresses this: pREs identified from ATAC-seq peaks near a gene of interest are each targeted by a pool of gRNAs, cells are stained for the target transcript by hybridization chain reaction (HCR), and cells are sorted by FACS into bins based on target gene expression. Comparing gRNA abundance between the low- and high-expression bins identifies which pREs, when repressed, significantly change expression of the target gene &mdash; directly linking noncoding regulatory elements to the genes they control.
+Common noncoding variants identified by GWAS map to noncoding regions of the genome where we don't know how they impact gene expression or which genes they regulate. CRISPRi HCR-FlowFISH screening addresses this: starting from a list of candidate, or putative, regulatory elements (pREs) identified from ATAC-seq peaks near a gene of interest, each pRE is targeted by a pool of gRNAs, cells are stained for the target transcript by hybridization chain reaction (HCR), and cells are sorted by FACS into bins based on target gene expression. Comparing gRNA abundance between the low- and high-expression bins identifies which of these candidate pREs, when repressed, significantly change expression of the target gene &mdash; directly identifying which regulatory elements control that gene.
 
 ![HCR-FlowFISH CRISPRi screening schematic](docs/manuscript_figures/HCR-FlowFISH_CRISPRi_schematic.png)
 
@@ -18,6 +18,16 @@ This repository analyzes four such screens, three loci in i3N-WTC11 iPSCs and on
 | SV2A | iNeuron (day 7) | `NGN2_SV2A_{b15,t15,bulk}_rep{1-4}` |
 
 `b15`/`t15` are the bottom 15% / top 15% HCR-FlowFISH sorted bins (by target gene expression, normalized to housekeeping gene TBP); `bulk` is unsorted. Each locus's gRNA library targets pREs identified from ATAC-seq peaks across that locus, plus non-targeting controls.
+
+### How the screen works
+
+Cells expressing dCas9<sup>KRAB</sup> (iPSCs or iNeurons) are transduced with the pooled lentiviral gRNA library at a low multiplicity of infection, so that each cell receives at most one gRNA, then selected with puromycin so that only transduced cells remain. Each surviving cell now stably represses one pRE (or, for non-targeting controls, no element) via CRISPRi. Cells are then fixed, permeabilized, and stained by HCR-FlowFISH for both the target gene transcript and the housekeeping gene TBP (to normalize for cell size/permeability), and sorted by FACS into bins based on target gene expression &mdash; bottom 15% and top 15% in these screens &mdash; along with a bulk (unsorted) sample.
+
+Genomic DNA is then extracted from each sorted bin as well as from a bulk (unsorted) sample of the same cells, and the gRNA sequence integrated into each cell's genome is PCR-amplified directly out of that genomic DNA and sequenced &mdash; that sequencing is the FASTQ data this pipeline processes. Since each cell carries one gRNA, sequencing and counting gRNAs in each bin measures how enriched or depleted each gRNA is between the low- and high-expression bins: a gRNA (and therefore its target pRE) enriched in the low-expression bin indicates that repressing that element decreases target gene expression, and vice versa.
+
+The bulk sample serves as a reference for library representation rather than an expression comparison. If a gRNA is absent or poorly represented in the bottom/top bins but well represented in bulk, that's a real sorting effect. But if it's also poorly represented in bulk, it likely dropped out of the library for a technical reason unrelated to gene expression &mdash; it may not have PCR-amplified well, or cells carrying it may have had a growth defect and been lost over the several days the cells were in culture before sorting. Filtering on bulk read count (Step 6 below) removes these dropouts before they can be mistaken for a genuine expression effect.
+
+Aggregating the enrichment signal across the gRNAs tiling each pRE and testing for significant enrichment (Steps 5-8 below) is how the screen identifies which candidate regulatory elements actively regulate the nearby gene.
 
 ## Tools and versions used
 
