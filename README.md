@@ -132,7 +132,7 @@ scripts/06_run_mageck.sh GD_FAM120A_RPM.csv GD_FAM120A \
 
 CRISPR-Cas9 screening analysis is performed using MAGeCK RRA paired analysis comparing bottom (treatment) and top (control) sorted bins, using non-targeting gRNAs as controls. MAGeCK RRA outputs `<output_prefix>.gene_summary.txt` (per-element negative/positive selection scores, p-values, FDRs, and ranks) and `<output_prefix>.sgrna_summary.txt` (per-guide statistics).
 
-RRA's element-level statistics in `gene_summary.txt` combine the enrichment of all gRNAs tiling a given pRE into a single effect size for that element, rather than reporting a separate effect size per guide. Requiring multiple independent gRNAs to agree before an element is called significant makes the result more robust: a single guide could show a strong effect for reasons unrelated to the pRE itself (an off-target or otherwise promiscuous effect on cell sorting), but that's much less likely to happen consistently across the up to 20 guides tiling the same element. This is also why `gene_summary.txt`, not `sgrna_summary.txt`, is the file used for downstream hit calling in Step 8.
+RRA's element-level statistics in `gene_summary.txt` combine the enrichment of all gRNAs tiling a given pRE into a single effect size for that element, rather than reporting a separate effect size per guide. Requiring multiple independent gRNAs to agree before an element is called significant makes the result more robust: a single guide could show a strong effect for reasons unrelated to the pRE itself (an off-target or otherwise promiscuous effect on cell sorting), but that's much less likely to happen consistently across the up to 20 guides tiling the same element.
 
 ### 8. Analyze MAGeCK results
 
