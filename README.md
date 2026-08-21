@@ -86,7 +86,7 @@ Produces `<sample>.counts` (guide name, read count) and `<sample>.alignment_summ
 
 ![FAM120A read quality distribution](docs/example_plots/FAM120A_read_quality.png)
 
-For the FAM120A bulk rep1 sample (1.39M reads), mean average quality per read is 37.1, with 99.2% of reads averaging Q30 or better &mdash; well above the Q30 threshold, so no additional quality filtering was needed for this run.
+For the FAM120A bulk rep1 sample (1.39M reads), mean average quality per read is 37.1, with 99.2% of reads averaging Q30 or better &mdash; the reads are high quality.
 
 **Mapping rate**, from `<sample>.alignment_summary.txt`: for the same sample, bowtie2 reports 89.89% of reads aligning to the FAM120A gRNA library (10.11% unaligned, likely reads with sequencing errors in the protospacer or contamination not matching any library guide). A mapping rate this high indicates the trimming window and library reference are correct for this sample; a much lower rate would be a sign to double-check the barcode length used for trimming (Step 3) or that the correct locus's library FASTA was used.
 
